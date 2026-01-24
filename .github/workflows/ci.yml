@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  install-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Run linting
+        run: npm run lint
+
+  build-and-test:
+    needs: install-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build project (frontend & backend)
+        run: npm run build
+      - name: Start backend in background
+        run: |
+          npx tsx packages/backend/src/index.ts &
+          BACKEND_PID=$!
+          sleep 3
+          echo "Backend started with PID: $BACKEND_PID"
+        shell: bash
+      - name: Run API smoke tests
+        run: npm test
+      - name: Cleanup
+        if: always()
+        run: |
+          kill $BACKEND_PID || true
+          echo "Backend stopped"
+
+  test-backend:
+    needs: install-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Run backend tests
+        run: npm run -w backend test

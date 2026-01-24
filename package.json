@@ -1,0 +1,22 @@
+{
+  "name": "fintech-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/frontend",
+    "packages/backend"
+  ],
+  "scripts": {
+    "build": "npm run -w frontend build && npm run -w backend build",
+    "start": "concurrently \"npm run -w backend dev\" \"npm run -w frontend dev\"",
+    "lint": "npm run -w frontend lint && npm run -w backend lint",
+    "test": "node scripts/api-test.mjs"
+  },
+  "devDependencies": {
+    "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "concurrently": "^8.2.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1"
+  }
+}
