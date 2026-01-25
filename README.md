@@ -13,7 +13,7 @@ A minimal monorepo skeleton for a fintech dashboard project. Back-end provides s
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/fintech-dashboard.git
+git clone https://github.com/m1hamuha/Fintech-Dashboard
 cd fintech-dashboard
 
 # Install dependencies
