@@ -39,10 +39,11 @@ jobs:
         run: npm run build
       - name: Start backend in background
         run: |
-          npx tsx packages/backend/src/index.ts &
+          PORT=3002 npx tsx packages/backend/src/index.ts &
           BACKEND_PID=$!
-          sleep 3
+          sleep 5
           echo "Backend started with PID: $BACKEND_PID"
+          curl --retry 5 --retry-delay 1 --retry-connrefused http://localhost:3002/health
         shell: bash
       - name: Run API smoke tests
         run: npm test
@@ -66,4 +67,4 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run backend tests
-        run: npm run -w backend test
+        run: cd packages/backend && npm test

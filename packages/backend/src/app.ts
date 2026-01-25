@@ -6,7 +6,7 @@ import openapiSpec from './openapi.json'
 // no extra path helpers here
 
 const app = express()
-const port = 3001
+const port = 3002
 
 app.use(express.json())
 

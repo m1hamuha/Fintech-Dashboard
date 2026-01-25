@@ -2,7 +2,7 @@
 import assert from 'assert/strict'
 
 async function main() {
-  const base = 'http://localhost:3001'
+  const base = 'http://localhost:3002'
   const accRes = await fetch(`${base}/accounts`)
   const accounts = await accRes.json()
   const txnRes = await fetch(`${base}/transactions`)

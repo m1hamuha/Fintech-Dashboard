@@ -20,8 +20,8 @@ export const TransactionsView: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:3001/transactions').then(r => r.json()),
-      fetch('http://localhost:3001/accounts').then(r => r.json()),
+      fetch('http://localhost:3002/transactions').then(r => r.json()),
+      fetch('http://localhost:3002/accounts').then(r => r.json()),
     ]).then(([t, a]) => {
       setTransactions(t ?? [])
       setAccounts(a ?? [])
@@ -37,7 +37,7 @@ export const TransactionsView: React.FC = () => {
     if (filters.category) q.append('category', filters.category)
     if (filters.minAmount) q.append('minAmount', String(filters.minAmount))
     if (filters.maxAmount) q.append('maxAmount', String(filters.maxAmount))
-    fetch(`http://localhost:3001/transactions?${q.toString()}`)
+    fetch(`http://localhost:3002/transactions?${q.toString()}`)
       .then(res => res.json())
       .then(data => setTransactions(data ?? []))
   }

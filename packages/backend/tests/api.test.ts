@@ -1,11 +1,23 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import request from 'supertest'
 import { app } from '../src/app'
-import { initDb } from '../src/db'
+import { initDb, closeDb } from '../src/db'
 
 beforeAll(async () => {
+  // Set test database path
+  process.env.DATABASE_URL = 'test.db'
   // Ensure DB is initialized before tests run
-  await initDb()
+  try {
+    await initDb()
+  } catch (error) {
+    console.error('Database initialization error:', error)
+    throw error
+  }
+})
+
+afterAll(async () => {
+  // Clean up database connection
+  await closeDb()
 })
 
 describe('Backend API - /accounts', () => {

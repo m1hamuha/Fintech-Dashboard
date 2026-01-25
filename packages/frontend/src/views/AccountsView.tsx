@@ -7,7 +7,7 @@ export const AccountsView: React.FC = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:3001/accounts')
+    fetch('http://localhost:3002/accounts')
       .then(res => res.json())
       .then((data) => setAccounts(data ?? []))
       .catch(() => setAccounts([]))
