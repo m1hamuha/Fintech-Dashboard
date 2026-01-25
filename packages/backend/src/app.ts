@@ -6,7 +6,6 @@ import openapiSpec from './openapi.json'
 // no extra path helpers here
 
 const app = express()
-const port = 3002
 
 app.use(express.json())
 
@@ -100,13 +99,8 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use(errorHandler)
 
 // Initialize DB and start server (except in test mode)
-initDb().then(() => {
-  if (process.env.NODE_ENV !== 'test') {
-    app.listen(port, () => {
-      console.log(`Backend listening on http://localhost:${port}`)
-    })
-  }
-}).catch((err) => {
+// Initialize DB but don't start server here (server starts in index.ts)
+initDb().catch((err) => {
   console.error('Failed to initialize DB', err)
 })
 
