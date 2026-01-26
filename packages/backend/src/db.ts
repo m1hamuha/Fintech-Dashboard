@@ -1,10 +1,10 @@
 import sqlite3 from 'sqlite3'
-import { open } from 'sqlite'
+import { open, Database } from 'sqlite'
 import path from 'path'
 
 const DB_PATH = process.env.DATABASE_URL || path.resolve(process.cwd(), 'fintech.db')
 
-let cachedDb: { close: () => Promise<void> } | null = null
+let cachedDb: Database | null = null
 
 async function getDb() {
   if (!cachedDb) {

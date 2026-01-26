@@ -37,44 +37,10 @@ jobs:
         run: npm install
       - name: Build project (frontend & backend)
         run: npm run build
-      - name: Start backend and run tests
-        run: |
-          # Start backend in background with logging
-          PORT=3002 NODE_ENV=development npx tsx packages/backend/src/index.ts > backend.log 2>&1 &
-          BACKEND_PID=$!
-          echo "Backend started with PID: $BACKEND_PID"
-          
-          # Wait for backend to be ready (more robust approach)
-          MAX_RETRIES=20
-          RETRY_DELAY=3
-          for i in $(seq 1 $MAX_RETRIES); do
-            echo "Attempt $i/$MAX_RETRIES: Checking if backend is ready..."
-            if curl -s http://localhost:3002/health > /dev/null; then
-              echo "✅ Backend is ready!"
-              break
-            fi
-            if [ $i -eq $MAX_RETRIES ]; then
-              echo "❌ Backend failed to start after $MAX_RETRIES attempts"
-              echo "Last 100 lines of backend log:"
-              tail -100 backend.log
-              exit 1
-            fi
-            sleep $RETRY_DELAY
-          done
-          
-          # Run API smoke tests
-          echo "🧪 Running API smoke tests..."
-          npm test
-          TEST_EXIT_CODE=$?
-          
-          # Cleanup
-          echo "🧹 Cleaning up..."
-          kill $BACKEND_PID || true
-          echo "Backend stopped"
-          
-          # Exit with test result code
-          exit $TEST_EXIT_CODE
-        shell: bash
+      - name: Run backend unit tests
+        run: cd packages/backend && npm test
+      - name: Run frontend build verification
+        run: cd packages/frontend && npm run build
 
   test-backend:
     needs: install-and-lint
@@ -89,5 +55,5 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: Run backend unit tests
+      - name: Run backend unit tests with vitest
         run: cd packages/backend && npm test

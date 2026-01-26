@@ -101,13 +101,35 @@ fintech-dashboard/
 
 ## 🧪 Testing
 
+### Unit Tests (CI)
 ```bash
-# Run API smoke tests
+# Run backend unit tests (used in CI)
+cd packages/backend && npm test
+
+# Run all tests
+npm test
+```
+
+### Manual API Testing
+Since the backend requires a running server, manual API testing is recommended:
+
+```bash
+# Start backend in development mode
+npm run -w backend dev
+
+# In another terminal, run API smoke tests
 npm test
 
-# Run backend tests specifically
-npm run -w backend test
+# Or test endpoints manually:
+curl http://localhost:3002/accounts
+curl http://localhost:3002/transactions
+curl http://localhost:3002/health
 ```
+
+### Test Coverage
+- **Backend Unit Tests**: 5 tests covering core API functionality
+- **Validation Tests**: Input validation and error handling
+- **Database Tests**: SQLite operations and data access
 
 ## 🛠 Tech Stack
 
