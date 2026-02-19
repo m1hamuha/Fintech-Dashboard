@@ -38,13 +38,29 @@ describe('Backend API - /accounts', () => {
 })
 
 describe('Backend API - /transactions', () => {
-  it('GET /transactions returns 200 and an array', async () => {
+  it('GET /transactions returns 200 with paginated data', async () => {
     const res = await request(app).get('/transactions')
     expect(res.status).toBe(200)
-    expect(Array.isArray(res.body)).toBe(true)
+    expect(res.body).toHaveProperty('data')
+    expect(res.body).toHaveProperty('pagination')
+    expect(Array.isArray(res.body.data)).toBe(true)
+    expect(res.body.pagination).toHaveProperty('page')
+    expect(res.body.pagination).toHaveProperty('limit')
+    expect(res.body.pagination).toHaveProperty('total')
+    expect(res.body.pagination).toHaveProperty('totalPages')
   })
   it('GET /transactions with invalid startDate returns 400', async () => {
     const res = await request(app).get('/transactions?startDate=not-a-date')
+    expect(res.status).toBe(400)
+  })
+  it('GET /transactions with pagination params works', async () => {
+    const res = await request(app).get('/transactions?page=1&limit=10')
+    expect(res.status).toBe(200)
+    expect(res.body.pagination.page).toBe(1)
+    expect(res.body.pagination.limit).toBe(10)
+  })
+  it('GET /transactions with invalid page returns 400', async () => {
+    const res = await request(app).get('/transactions?page=0')
     expect(res.status).toBe(400)
   })
 })

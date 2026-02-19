@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { BalanceCard } from '../components/BalanceCard'
 import { BarChart } from '../components/BarChart'
-
-type Account = { id: string; name: string; balance: number; currency: string; type: string }
+import api, { Account } from '../services/api'
 
 export const DashboardView: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('http://localhost:3002/accounts')
-      .then(r => r.json())
-      .then((data) => setAccounts(data ?? []))
-      .catch(() => setAccounts([]))
+    api.accounts.getAll()
+      .then((data) => setAccounts(data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
 
@@ -20,6 +19,7 @@ export const DashboardView: React.FC = () => {
   const data = accounts.map(a => ({ label: a.name, value: a.balance }))
 
   if (loading) return <div>Loading dashboard...</div>
+  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
 
   return (
     <div>

@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
-
-type Account = { id: string; name: string; balance: number; currency: string; type: string }
+import api, { Account } from '../services/api'
 
 export const AccountsView: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('http://localhost:3002/accounts')
-      .then(res => res.json())
-      .then((data) => setAccounts(data ?? []))
-      .catch(() => setAccounts([]))
+    api.accounts.getAll()
+      .then((data) => setAccounts(data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
 
   if (loading) return <div>Loading accounts...</div>
+  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
   return (
     <div>
       <h2>Accounts</h2>

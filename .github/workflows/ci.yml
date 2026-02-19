@@ -39,6 +39,8 @@ jobs:
         run: npm run build
       - name: Run backend unit tests
         run: cd packages/backend && npm test
+      - name: Run frontend unit tests
+        run: cd packages/frontend && npm test
       - name: Run frontend build verification
         run: cd packages/frontend && npm run build
 

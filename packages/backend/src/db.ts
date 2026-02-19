@@ -33,6 +33,12 @@ export async function initDb() {
     FOREIGN KEY (accountId) REFERENCES accounts(id)
   )`)
 
+  // Create indexes for better query performance
+  await db.exec(`CREATE INDEX IF NOT EXISTS idx_transactions_accountId ON transactions(accountId)`)
+  await db.exec(`CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date)`)
+  await db.exec(`CREATE INDEX IF NOT EXISTS idx_transactions_category ON transactions(category)`)
+  await db.exec(`CREATE INDEX IF NOT EXISTS idx_transactions_amount ON transactions(amount)`)
+
   // Seed accounts if empty
   const accCount = await db.get('SELECT COUNT(*) AS cnt FROM accounts')
   if (accCount?.cnt === 0) {
@@ -69,6 +75,8 @@ export async function getTransactions(filters?: {
   category?: string
   minAmount?: number
   maxAmount?: number
+  page?: number
+  limit?: number
 }) {
   const db = await getDb()
   let sql = 'SELECT id, date, description, amount, currency, category, accountId FROM transactions WHERE 1=1'
@@ -79,7 +87,28 @@ export async function getTransactions(filters?: {
   if (filters?.category) { sql += ' AND category = ?'; params.push(filters.category) }
   if (filters?.minAmount != null) { sql += ' AND amount >= ?'; params.push(filters.minAmount) }
   if (filters?.maxAmount != null) { sql += ' AND amount <= ?'; params.push(filters.maxAmount) }
-  return db.all(sql, params)
+  
+  // Get total count for pagination
+  const countResult = await db.get(`SELECT COUNT(*) as total FROM transactions WHERE 1=1`)
+  const total = countResult?.total || 0
+  
+  // Add pagination
+  const page = filters?.page || 1
+  const limit = filters?.limit || 50
+  const offset = (page - 1) * limit
+  sql += ' ORDER BY date DESC LIMIT ? OFFSET ?'
+  params.push(limit, offset)
+  
+  const rows = await db.all(sql, params)
+  return {
+    data: rows,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit)
+    }
+  }
 }
 
 export async function closeDb() {

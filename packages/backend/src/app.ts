@@ -3,9 +3,36 @@ import { initDb, getAccounts, getAccountById, getTransactions } from './db'
 import { AppError, errorHandler } from './errors'
 import swaggerUi from 'swagger-ui-express'
 import openapiSpec from './openapi.json'
-// no extra path helpers here
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import cors from 'cors'
 
 const app = express()
+
+// Security middleware
+app.use(helmet())
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+})
+app.use(limiter)
+
+// CORS configuration - restrict to allowed origins
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'http://localhost:3000']
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 
 app.use(express.json())
 
@@ -14,18 +41,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec))
 // Inline docs JSON for compatibility
 app.get('/docs.json', (_req, res) => {
   res.json(openapiSpec)
-})
-
-// Basic CORS for local dev (optional, but handy for frontend dev)
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200)
-  } else {
-    next()
-  }
 })
 
 // Routes
@@ -67,6 +82,17 @@ app.get('/accounts/:id', async (req: Request, res: Response, next: NextFunction)
       throw new AppError('maxAmount must be a number', 400)
     }
 
+    // Pagination validation
+    const page = q.page ? parseInt(q.page, 10) : 1
+    const limit = q.limit ? parseInt(q.limit, 10) : 50
+    
+    if (isNaN(page) || page < 1) {
+      throw new AppError('page must be a positive integer', 400)
+    }
+    if (isNaN(limit) || limit < 1 || limit > 100) {
+      throw new AppError('limit must be between 1 and 100', 400)
+    }
+
     // Optional: verify accountId exists if provided
     if (q.accountId) {
       const acc = await getAccountById(q.accountId)
@@ -82,9 +108,11 @@ app.get('/accounts/:id', async (req: Request, res: Response, next: NextFunction)
     if (q.category) filters.category = q.category
     if (q.minAmount) filters.minAmount = Number(q.minAmount)
     if (q.maxAmount) filters.maxAmount = Number(q.maxAmount)
+    filters.page = page
+    filters.limit = limit
 
-    const txs = await getTransactions(filters)
-    res.json(txs)
+    const result = await getTransactions(filters)
+    res.json(result)
   } catch (err) {
     next(err)
   }
