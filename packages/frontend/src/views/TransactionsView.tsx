@@ -96,15 +96,21 @@ export const TransactionsView: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map(t => (
-            <tr key={t.id}>
-              <td>{t.date}</td>
-              <td>{t.description}</td>
-              <td>{t.currency} {t.amount.toFixed(2)}</td>
-              <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
-              <td>{t.category}</td>
+          {transactions.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="empty">No transactions match your filters.</td>
             </tr>
-          ))}
+          ) : (
+            transactions.map(t => (
+              <tr key={t.id}>
+                <td>{t.date}</td>
+                <td>{t.description}</td>
+                <td>{t.currency} {t.amount.toFixed(2)}</td>
+                <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
+                <td>{t.category}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
