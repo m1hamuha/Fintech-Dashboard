@@ -89,24 +89,28 @@ export const TransactionsView: React.FC = () => {
         </div>
       )}
 
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th><th>Description</th><th>Amount</th><th>Account</th><th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map(t => (
-            <tr key={t.id}>
-              <td>{t.date}</td>
-              <td>{t.description}</td>
-              <td>{t.currency} {t.amount.toFixed(2)}</td>
-              <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
-              <td>{t.category}</td>
+      {transactions.length === 0 ? (
+        <div className="empty">No transactions found. Try adjusting your filters.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Description</th><th>Amount</th><th>Account</th><th>Category</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map(t => (
+              <tr key={t.id}>
+                <td>{t.date}</td>
+                <td>{t.description}</td>
+                <td>{t.currency} {t.amount.toFixed(2)}</td>
+                <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
+                <td>{t.category}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {pagination && pagination.totalPages > 1 && (
         <div style={{ marginTop: 10, display: 'flex', gap: 8, justifyContent: 'center' }}>
