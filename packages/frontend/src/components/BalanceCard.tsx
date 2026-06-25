@@ -4,7 +4,7 @@ export const BalanceCard: React.FC<{ total: number; currency?: string }> = ({ to
   return (
     <div className="card balance-card">
       <div className="card-title">Total Balance</div>
-      <div className="card-amount">{currency} {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+      <div className="card-amount">{currency} {total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
     </div>
   )
 }
