@@ -14,7 +14,7 @@ export const AccountsView: React.FC = () => {
   }, [])
 
   if (loading) return <div>Loading accounts...</div>
-  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
+  if (error) return <div role="alert" style={{ color: 'red' }}>Error: {error}</div>
   return (
     <div>
       <h2>Accounts</h2>

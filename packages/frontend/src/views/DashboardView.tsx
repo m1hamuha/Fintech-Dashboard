@@ -19,7 +19,7 @@ export const DashboardView: React.FC = () => {
   const data = accounts.map(a => ({ label: a.name, value: a.balance }))
 
   if (loading) return <div>Loading dashboard...</div>
-  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
+  if (error) return <div role="alert" style={{ color: 'red' }}>Error: {error}</div>
 
   return (
     <div>
