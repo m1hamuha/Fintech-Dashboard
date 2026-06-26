@@ -18,7 +18,7 @@ export const DashboardView: React.FC = () => {
   const total = accounts.reduce((sum, a) => sum + (a.balance ?? 0), 0)
   const data = accounts.map(a => ({ label: a.name, value: a.balance }))
 
-  if (loading) return <div>Loading dashboard...</div>
+  if (loading) return <div role="status" aria-live="polite">Loading dashboard...</div>
   if (error) return <div role="alert" style={{ color: 'red' }}>Error: {error}</div>
 
   return (
