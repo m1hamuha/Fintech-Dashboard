@@ -13,7 +13,7 @@ export const AccountsView: React.FC = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div>Loading accounts...</div>
+  if (loading) return <div role="status" aria-live="polite">Loading accounts...</div>
   if (error) return <div role="alert" style={{ color: 'red' }}>Error: {error}</div>
   return (
     <div>
