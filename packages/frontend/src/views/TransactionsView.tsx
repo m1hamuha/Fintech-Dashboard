@@ -67,7 +67,7 @@ export const TransactionsView: React.FC = () => {
   }
 
   if (loading) return <div>Loading transactions...</div>
-  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
+  if (error) return <div role="alert" style={{ color: 'red' }}>Error: {error}</div>
   return (
     <div>
       <h2>Transactions</h2>
