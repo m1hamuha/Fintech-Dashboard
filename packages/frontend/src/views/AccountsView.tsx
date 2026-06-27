@@ -19,9 +19,13 @@ export const AccountsView: React.FC = () => {
     <div>
       <h2>Accounts</h2>
       <ul>
-        {accounts.map(a => (
-          <li key={a.id}>{a.name} — {a.currency} {a.balance.toFixed(2)}</li>
-        ))}
+        {accounts.length === 0 ? (
+          <li className="empty">No accounts found.</li>
+        ) : (
+          accounts.map(a => (
+            <li key={a.id}>{a.name} — {a.currency} {a.balance.toFixed(2)}</li>
+          ))
+        )}
       </ul>
     </div>
   )
