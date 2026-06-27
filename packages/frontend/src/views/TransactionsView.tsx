@@ -100,7 +100,7 @@ export const TransactionsView: React.FC = () => {
       )}
 
       <div role="region" aria-label="Transactions table" tabIndex={0} style={{ overflowX: 'auto' }}>
-        <table>
+        <table className="transactions-table">
           <thead>
             <tr>
               <th>Date</th><th>Description</th><th>Amount</th><th>Account</th><th>Category</th>
