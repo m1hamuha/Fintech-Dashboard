@@ -1,6 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import api, { Transaction, Account, TransactionFilters, PaginationInfo } from '../services/api'
 
+// Render the API's ISO date (YYYY-MM-DD) as a human-readable date.
+// Locale pinned to en-US and timeZone to UTC so a date-only string never
+// shifts a day in negative-offset timezones and stays deterministic.
+const formatDate = (iso: string): string => {
+  const d = new Date(iso)
+  return isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
+}
+
 export const TransactionsView: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -104,7 +114,7 @@ export const TransactionsView: React.FC = () => {
             ) : (
               transactions.map(t => (
                 <tr key={t.id}>
-                  <td>{t.date}</td>
+                  <td>{formatDate(t.date)}</td>
                   <td>{t.description}</td>
                   <td>{t.currency} {t.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
