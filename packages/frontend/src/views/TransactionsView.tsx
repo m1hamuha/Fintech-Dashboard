@@ -84,7 +84,7 @@ export const TransactionsView: React.FC = () => {
         <button onClick={applyFilters}>Apply</button>
       </div>
       {pagination && (
-        <div style={{ marginBottom: 10, padding: 8, background: '#f5f5f5', borderRadius: 4 }}>
+        <div style={{ marginBottom: 10, padding: 8, background: '#f5f5f5', color: '#1a2540', borderRadius: 4 }}>
           Showing {transactions.length} of {pagination.total} transactions | Page {pagination.page} of {pagination.totalPages}
         </div>
       )}
