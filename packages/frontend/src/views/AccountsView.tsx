@@ -23,7 +23,7 @@ export const AccountsView: React.FC = () => {
           <li className="empty">No accounts found.</li>
         ) : (
           accounts.map(a => (
-            <li key={a.id}>{a.name} — {a.currency} {a.balance.toFixed(2)}</li>
+            <li key={a.id}>{a.name} — {a.currency} {a.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</li>
           ))
         )}
       </ul>

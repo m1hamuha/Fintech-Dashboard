@@ -106,7 +106,7 @@ export const TransactionsView: React.FC = () => {
                 <tr key={t.id}>
                   <td>{t.date}</td>
                   <td>{t.description}</td>
-                  <td>{t.currency} {t.amount.toFixed(2)}</td>
+                  <td>{t.currency} {t.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
                   <td>{t.category}</td>
                 </tr>
