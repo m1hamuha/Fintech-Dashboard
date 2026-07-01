@@ -10,7 +10,9 @@ function App(): JSX.Element {
   return (
     <BrowserRouter>
       <div className="dashboard">
-        <header className="header">Fintech Dashboard</header>
+        <header className="header">
+          <h1 style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit' }}>Fintech Dashboard</h1>
+        </header>
         <nav aria-label="Primary" style={{ display: 'flex', gap: 8, padding: 12, justifyContent: 'center' }}>
           {[
             { to: '/', label: 'Dashboard', end: true },
