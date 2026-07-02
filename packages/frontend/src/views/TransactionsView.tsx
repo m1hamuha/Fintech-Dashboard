@@ -93,7 +93,13 @@ export const TransactionsView: React.FC = () => {
   return (
     <div>
       <h2>Transactions</h2>
-      <div className="filters" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+      {/* A real form so pressing Enter in any filter input applies the filters
+          (implicit submission) instead of silently doing nothing. */}
+      <form
+        className="filters"
+        style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}
+        onSubmit={e => { e.preventDefault(); applyFilters() }}
+      >
         <select aria-label="Filter by account" value={filters.accountId} onChange={e => setFilters({ ...filters, accountId: e.target.value })}>
           <option value="">All accounts</option>
           {accounts.map(a => (<option key={a.id} value={a.id}>{a.name}</option>))}
@@ -103,8 +109,8 @@ export const TransactionsView: React.FC = () => {
         <input aria-label="Category" placeholder="Category" value={filters.category} onChange={e => setFilters({ ...filters, category: e.target.value })} />
         <input aria-label="Min amount" placeholder="Min amount" value={filters.minAmount} onChange={e => setFilters({ ...filters, minAmount: e.target.value })} />
         <input aria-label="Max amount" placeholder="Max amount" value={filters.maxAmount} onChange={e => setFilters({ ...filters, maxAmount: e.target.value })} />
-        <button onClick={applyFilters}>Apply</button>
-      </div>
+        <button type="submit">Apply</button>
+      </form>
       {pagination && (
         <div style={{ marginBottom: 10, padding: 8, background: '#f5f5f5', color: '#1a2540', borderRadius: 4 }}>
           Showing {transactions.length} of {pagination.total} transactions | Page {pagination.page} of {pagination.totalPages}

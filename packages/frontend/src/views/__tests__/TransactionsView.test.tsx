@@ -74,4 +74,21 @@ describe('TransactionsView', () => {
     console.log(`[measure] getAll calls after Apply: ${callsAfterApply}`)
     expect(callsAfterApply).toBe(2)
   })
+
+  it('applies filters when Enter is pressed in a filter input', async () => {
+    const user = userEvent.setup()
+    render(<TransactionsView />)
+    await waitFor(() => {
+      expect(screen.getByText('Coffee')).toBeInTheDocument()
+    })
+
+    await user.type(screen.getByLabelText('Category'), 'food{Enter}')
+    await waitFor(() => {
+      expect(vi.mocked(api.transactions.getAll).mock.calls.length).toBe(2)
+    })
+    // Enter must apply from page 1, same as clicking Apply
+    expect(vi.mocked(api.transactions.getAll)).toHaveBeenLastCalledWith(
+      expect.objectContaining({ category: 'food', page: 1 })
+    )
+  })
 })
