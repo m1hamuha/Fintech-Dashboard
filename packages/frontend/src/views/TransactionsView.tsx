@@ -49,9 +49,14 @@ export const TransactionsView: React.FC = () => {
   }, [loadData])
 
   const applyFilters = async () => {
+    // Reset to page 1 whenever filters change: the current page may not exist
+    // in the newly-filtered (smaller) result set, which would return an empty
+    // page and show a misleading "0 of N" empty state (same pattern as handlePageChange).
+    const resetFilters = { ...filters, page: 1 }
+    setFilters(resetFilters)
     setLoading(true)
     try {
-      const response = await api.transactions.getAll(filters)
+      const response = await api.transactions.getAll(resetFilters)
       setTransactions(response.data)
       setPagination(response.pagination)
     } catch (err) {
