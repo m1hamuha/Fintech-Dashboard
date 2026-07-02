@@ -11,7 +11,7 @@ html, body, #root { height: 100%; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; background: linear-gradient(135deg, #0b1020 0%, #1a2540 60%, #0b1020 100%); color: var(--text); }
 .dashboard { min-height: 100vh; }
 .header { padding: 20px; font-size: 24px; font-weight: 700; text-align: center; }
-.content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+.content { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
 .card { background: var(--surface); border: 1px solid rgba(255,255,255,.15); padding: 16px; border-radius: 8px; }
 .card-title { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
 .card-amount { font-size: 28px; font-weight: 700; }
