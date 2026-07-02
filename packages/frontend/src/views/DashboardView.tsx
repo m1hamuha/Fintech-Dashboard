@@ -23,6 +23,7 @@ export const DashboardView: React.FC = () => {
 
   return (
     <div>
+      <h2>Dashboard</h2>
       <BalanceCard total={total} currency="USD" />
       <div style={{ marginTop: 20 }}>
         <BarChart data={data} height={180} />
