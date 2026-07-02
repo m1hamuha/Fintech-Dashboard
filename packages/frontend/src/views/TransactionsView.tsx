@@ -45,8 +45,15 @@ export const TransactionsView: React.FC = () => {
   }, [filters])
 
   useEffect(() => {
+    // Fetch once on mount only. Filter edits are drafts until the user clicks
+    // Apply, and applyFilters/handlePageChange already fetch explicitly.
+    // Depending on loadData (which changes with filters) fired one API request
+    // per keystroke in the filter inputs — silently swapping results mid-typing
+    // (with an out-of-order race showing stale data) and double-fetching on
+    // every Apply/page change.
     loadData()
-  }, [loadData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const applyFilters = async () => {
     // Reset to page 1 whenever filters change: the current page may not exist
