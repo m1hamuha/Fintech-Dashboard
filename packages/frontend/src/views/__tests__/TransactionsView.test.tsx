@@ -117,4 +117,24 @@ describe('TransactionsView', () => {
     expect(creditCell?.getAttribute('style')).toContain('--credit')
     expect(debitCell?.getAttribute('style')).toContain('--debit')
   })
+
+  it('recovers from a failed load when Retry is clicked', async () => {
+    const user = userEvent.setup()
+    vi.mocked(api.transactions.getAll)
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValue(mockTxResponse)
+
+    render(<TransactionsView />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Retry' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Coffee')).toBeInTheDocument()
+    })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
 })
