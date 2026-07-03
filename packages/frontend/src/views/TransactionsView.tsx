@@ -55,6 +55,14 @@ export const TransactionsView: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const retryLoad = () => {
+    // loadData only flips loading off (initial state is true), so reset both
+    // states here to leave the error dead-end and show the loading indicator.
+    setError(null)
+    setLoading(true)
+    loadData()
+  }
+
   const applyFilters = async () => {
     // Reset to page 1 whenever filters change: the current page may not exist
     // in the newly-filtered (smaller) result set, which would return an empty
@@ -89,7 +97,14 @@ export const TransactionsView: React.FC = () => {
   }
 
   if (loading) return <div role="status" aria-live="polite">Loading transactions...</div>
-  if (error) return <div role="alert" style={{ color: 'red' }}>Error: {error}</div>
+  if (error) return (
+    <div role="alert" style={{ color: 'red' }}>
+      Error: {error}{' '}
+      {/* Recovery path: a transient fetch failure must not brick the view
+          until a full page reload. */}
+      <button type="button" onClick={retryLoad}>Retry</button>
+    </div>
+  )
   return (
     <div>
       <h2>Transactions</h2>
