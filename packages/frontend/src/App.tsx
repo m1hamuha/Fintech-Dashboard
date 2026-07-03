@@ -1,14 +1,31 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom'
 import { DashboardView } from './views/DashboardView'
 import { AccountsView } from './views/AccountsView'
 import { TransactionsView } from './views/TransactionsView'
 
+const routeTitles: Record<string, string> = {
+  '/': 'Dashboard',
+  '/accounts': 'Accounts',
+  '/transactions': 'Transactions',
+}
 
+// Keep the window title in sync with the current route so browser tabs,
+// history, bookmarks, and screen-reader window titles say which page this is
+// (WCAG 2.4.2) instead of the same app name on every route.
+function TitleSync(): null {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const section = routeTitles[pathname]
+    document.title = section ? `${section} — Fintech Dashboard` : 'Fintech Dashboard'
+  }, [pathname])
+  return null
+}
 
 function App(): JSX.Element {
   return (
     <BrowserRouter>
+      <TitleSync />
       <div className="dashboard">
         <header className="header">
           <h1 style={{ margin: 0, fontSize: 'inherit', fontWeight: 'inherit' }}>Fintech Dashboard</h1>
