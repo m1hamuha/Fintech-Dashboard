@@ -91,4 +91,30 @@ describe('TransactionsView', () => {
       expect.objectContaining({ category: 'food', page: 1 })
     )
   })
+
+  it('colors amounts by sign: credits green token, debits red token', async () => {
+    vi.mocked(api.transactions.getAll).mockResolvedValue({
+      data: [
+        mockTxResponse.data[0], // amount 4.5 (credit)
+        {
+          id: 'T-002',
+          accountId: 'A-001',
+          date: '2026-01-21',
+          description: 'Groceries',
+          amount: -9.99,
+          currency: 'USD',
+          category: 'food'
+        }
+      ],
+      pagination: { total: 2, page: 1, totalPages: 1, limit: 50 }
+    })
+    render(<TransactionsView />)
+    await waitFor(() => {
+      expect(screen.getByText('Groceries')).toBeInTheDocument()
+    })
+    const creditCell = screen.getByText(/USD 4\.50/).closest('td')
+    const debitCell = screen.getByText(/USD -9\.99/).closest('td')
+    expect(creditCell?.getAttribute('style')).toContain('--credit')
+    expect(debitCell?.getAttribute('style')).toContain('--debit')
+  })
 })

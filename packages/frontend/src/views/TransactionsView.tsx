@@ -134,7 +134,11 @@ export const TransactionsView: React.FC = () => {
                 <tr key={t.id}>
                   <td>{formatDate(t.date)}</td>
                   <td>{t.description}</td>
-                  <td>{t.currency} {t.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  {/* Color reinforces the +/- sign (money in vs out); the sign
+                      itself keeps the distinction non-color-only (WCAG 1.4.1). */}
+                  <td style={{ color: t.amount < 0 ? 'var(--debit)' : 'var(--credit)' }}>
+                    {t.currency} {t.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </td>
                   <td>{accounts.find(a => a.id === t.accountId)?.name ?? t.accountId}</td>
                   <td>{t.category}</td>
                 </tr>

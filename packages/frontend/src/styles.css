@@ -4,6 +4,9 @@
   --text: #e6eaf2;
   --muted: #93a4be;
   --primary: #4f8bd8;
+  /* WCAG AA on both body-gradient stops (#0b1020 / #1a2540) */
+  --credit: #4ade80;
+  --debit: #f87171;
 }
 
 * { box-sizing: border-box; }
