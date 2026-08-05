@@ -8,9 +8,7 @@ export const DashboardView: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const loadAccounts = useCallback(() => {
-    setLoading(true)
-    setError(null)
+  const requestAccounts = useCallback(() => {
     api.accounts.getAll()
       .then((data) => setAccounts(data))
       .catch((err) => setError(err.message))
@@ -18,8 +16,14 @@ export const DashboardView: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    loadAccounts()
-  }, [loadAccounts])
+    requestAccounts()
+  }, [requestAccounts])
+
+  const retryLoad = () => {
+    setLoading(true)
+    setError(null)
+    requestAccounts()
+  }
 
   const total = accounts.reduce((sum, a) => sum + (a.balance ?? 0), 0)
   const data = accounts.map(a => ({ label: a.name, value: a.balance }))
@@ -30,7 +34,7 @@ export const DashboardView: React.FC = () => {
       Error: {error}{' '}
       {/* Recovery path: a transient fetch failure must not brick the view
           until a full page reload. */}
-      <button type="button" onClick={loadAccounts}>Retry</button>
+      <button type="button" onClick={retryLoad}>Retry</button>
     </div>
   )
 
